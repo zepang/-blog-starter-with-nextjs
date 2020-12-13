@@ -307,6 +307,42 @@ export async function getStaticPaths () {
 
 目前已经可以通过访问`localhost:3000/post/:postName`正确的展示Markdown文章页面和内容。
 
-OK，到这里的话，已经算是配置了一个比较基础的starter项目。
+* ## 添加markdown代码块的语法高亮
 
-另外，我打算在这个starter项目的基础上来搭建个人博客，后续有其他的内容需要添加到模板的将会继续添加。
+`react-markdown` 默认没有语法高亮，语法高亮需要用到另外一个依赖 `react-syntax-highlighter`
+
+```
+yarn add react-syntax-highlighter
+```
+
+关于 `react-syntax-highlighter` 的使用这里不做过多说明，具体的话去查看对应的文档即可。
+
+为了使的 `react-syntax-highlighter` 配合 `react-markdown`，需要使用`react-markdown`的自定义`renderers`，文档也有提到相关的内容。
+
+修改`pages/post/[postName].js`的代码，针对`code`标签的内容交给`CodeBlock`组件处理：
+
+```js
+...
+{post.content && (<ReactMarkdown children={post.content} renderers={{ code: CodeBlock }}></ReactMarkdown>)}
+...
+```
+
+创建文件`components/CodeBlock.js`: 
+
+```js
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { okaidia } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+
+const CodeBlock = (props) => {
+  const { language, value } = props
+  return (
+    <SyntaxHighlighter language={language} style={okaidia}>
+      {value}
+    </SyntaxHighlighter>
+  )
+}
+
+export default CodeBlock
+```
+
+这样markdown中代码块的语法高亮就处理完了。

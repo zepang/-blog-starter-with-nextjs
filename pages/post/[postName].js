@@ -8,7 +8,7 @@ export default function post ({ post = {} }) {
   return (
     <div>
       <h1>这是文章{router.query.postName}的详情页面</h1>
-      {post.content && (<ReactMarkdown children={post.content}></ReactMarkdown>)}
+      {post.content && (<ReactMarkdown children={post.content} renderers={{ code: CodeBlock }}></ReactMarkdown>)}
     </div>
   ) 
 }
